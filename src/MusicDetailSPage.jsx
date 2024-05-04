@@ -4,6 +4,8 @@ import Lyrics from './Components/Lyrics';
 import Player from './Components/Player';
 import Loader from './Components/Loader';
 import toast, { Toaster } from 'react-hot-toast';
+import { motion } from 'framer-motion';
+
 
 function MusicDetailSPage() {
     // Extracting song ID from the URL
@@ -18,6 +20,7 @@ function MusicDetailSPage() {
     const [suggestions, setSuggestions] = useState([]);
     const [previousSongId, setPreviousSongId] = useState(null); // State to store the previous song ID
     const navigate = useNavigate();
+
 
     // Fetch song details when the component mounts or when songId changes
     useEffect(() => {
@@ -128,18 +131,18 @@ function MusicDetailSPage() {
                             <div className="flex flex-col sm:flex-row items-center justify-between">
                                 <div className="w-full text-left sm:text-left flex flex-row gap-4 items-center justify-between md:justify-start">
                                     <div className='flex flex-row gap-4 flex-1 sm:max-w-80'>
-                                        <div className="h-14 w-14 flex-0">
+                                        <div className="h-14 w-14 flex-0 rounded-lg overflow-hidden">
                                             <img
                                                 src={song.image[2].url}
-                                                className="h-full w-full rounded-lg"
+                                                className="h-full w-full"
                                             />
                                         </div>
                                         <div className="flex flex-col justify-center sm:max-w-64 flex-1">
-                                            <marquee className=" text-2xl sm:text-xl md:text-2xl font-bold text-gray-900 lg:text-2xl" dangerouslySetInnerHTML={{ __html: song.name }} />
+                                            <marquee className=" text-xl sm:text-xl md:text-2xl font-bold text-gray-900 lg:text-2xl " dangerouslySetInnerHTML={{ __html: song.name }} />
                                             <p className="text-sm text-gray-500" dangerouslySetInnerHTML={{ __html: song.artists.primary[0].name }} />
                                         </div>
                                     </div>
-                                    <button onClick={toggleLyricsVisibility} className='flex flex-0 justify-center items-center bg-sky-400 h-12 w-12 rounded-lg text-white'><i className="ri-music-2-line"></i></button>
+                                    <button onClick={toggleLyricsVisibility} className='flex flex-0 justify-center items-center bg-green-400 h-10 w-10 rounded-lg text-white'><i className="ri-music-2-line"></i></button>
                                 </div>
                                 <div className="max-w-md w-full flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center">
                                     <Player
@@ -156,6 +159,16 @@ function MusicDetailSPage() {
                 ) : (
                     <Loader />
                 )}
+                {song ? (
+                    <div className="w-full mx-auto max-w-screen-xl px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 bg-white">
+                        <div className="flex flex-row justify-between items-center">
+                            <button onClick={() => navigate(-1)} className='text-sm h-12'><i className="ri-arrow-left-s-line"></i> Back</button>
+                            <button onClick={handleCopyUrl} className='text-sm h-12'><i className="ri-share-line"></i></button>
+                        </div>
+                    </div>
+                ) : (
+                    <Loader />
+                )}
 
                 {/* Suggestions */}
                 {/* Render the suggestions only if suggestions array is not empty */}
@@ -168,27 +181,34 @@ function MusicDetailSPage() {
                             :
                             <section className="">
                                 <div className="w-full mx-auto max-w-screen-xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 bg-white mb-56">
-                                    <div className="flex flex-row justify-between items-center">
+                                    {/* <div className="flex flex-row justify-between items-center">
                                         <button onClick={() => navigate(-1)} className='text-sm h-12'><i className="ri-arrow-left-s-line"></i> Back</button>
                                         <button onClick={handleCopyUrl} className='text-sm h-12'><i class="ri-share-line"></i> Share</button>
-                                    </div>
-                                    <h2 className="text-xl mb-4 font-bold pl-2">You may also like</h2>
+                                    </div> */}
+                                    <h2 className="text-xl mb-4 font-bold pl-2 text-green-500">You may also like</h2>
                                     <div className="bg-gray-100 p-4 rounded">
                                         <ul className="flex flex-col gap-2 grid lg:grid-cols-2 grid-cols-1 md:grid-cols-2">
                                             {suggestions.map((suggestion, index) => (
-                                                <li key={index} onClick={() => handlePlaySuggestion(suggestion)} className="cursor-pointer bg-gray-200 p-2 rounded-lg h-max">
+                                                <motion.li
+                                                    whileInView={{ opacity: 1, y: 0 }}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    transition={{ delay: 0, duration: 0.5 }}
+                                                    key={index} onClick={() => handlePlaySuggestion(suggestion)} className="cursor-pointer bg-gray-200 p-2 rounded-lg h-max">
                                                     <div className="flex flex-row gap-2 items-center">
                                                         <img src={suggestion.image[2].url} className="rounded-lg h-12 w-12" />
                                                         <div className="flex flex-col">
-                                                            <div className="flex flex-row gap-2 items-center">
-                                                                <p className="font-semibold text-base flex-1" dangerouslySetInnerHTML={{ __html: suggestion.name }} />
-                                                                {suggestion.explicitContent ? <span className='text-xs bg-sky-400 text-white h-4 w-4 rounded flex justify-center items-center'>E</span> : ""}
+                                                            <div className="flex flex-row gap-1 items-center">
+                                                                {suggestion.explicitContent ? <span className='text-xs bg-green-400 text-white h-4 w-4 rounded flex justify-center items-center'>E</span> : ""}
+                                                                <p className="font-semibold text-base flex-1 overflow-hidden truncate max-w-40 sm:max-w-full" dangerouslySetInnerHTML={{ __html: suggestion.name }} />
                                                             </div>
-                                                            <p className="text-sm " dangerouslySetInnerHTML={{ __html: suggestion.artists.primary[0].name }} />
+                                                            {suggestion.artists.primary[0] && (
+                                                                <p className="text-sm " dangerouslySetInnerHTML={{ __html: suggestion.artists.primary[0].name }} />
+                                                            )}
                                                         </div>
                                                     </div>
-                                                </li>
+                                                </motion.li>
                                             ))}
+
                                         </ul>
                                     </div>
                                 </div>

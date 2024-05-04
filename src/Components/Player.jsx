@@ -115,13 +115,13 @@ function CustomAudioPlayer({ audioSource, audioName, onEnded, onNext, onPrevious
               <i className="ri-download-line text-xl"></i>
             </button>
           }
-          <button onClick={onPrevious} className="bg-sky-200 h-10 w-10 text-black rounded-lg ">
+          <button onClick={onPrevious} className="bg-green-200 h-10 w-10 text-black rounded-lg ">
             <i className="ri-skip-back-line text-xl"></i>
           </button>
-          <button onClick={togglePlayPause} className="bg-sky-500 h-12 w-12 text-white rounded-lg">
+          <button onClick={togglePlayPause} className="bg-green-500 h-12 w-12 text-white rounded-lg">
             {isPlaying ? <i className="ri-pause-line text-xl"></i> : <i className="ri-play-line text-xl"></i>}
           </button>
-          <button onClick={onNext} className="bg-sky-200 h-10 w-10 text-black rounded-lg">
+          <button onClick={onNext} className="bg-green-200 h-10 w-10 text-black rounded-lg">
             <i className="ri-skip-forward-line text-xl"></i>
           </button>
           <button onClick={toggleMute} className=" h-12 w-12 text-black rounded-lg">
@@ -133,7 +133,7 @@ function CustomAudioPlayer({ audioSource, audioName, onEnded, onNext, onPrevious
           </button>
         </div>
         <input
-          className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-2 bg-gray-200 rounded appearance-none cursor-pointer"
           type="range"
           value={currentTime}
           max={duration || 0} // Set max to duration if available, otherwise 0

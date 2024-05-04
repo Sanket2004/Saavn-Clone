@@ -7,18 +7,24 @@ function SongItem({ song, onDownload }) {
     }
 
     return (
-        <div className='flex flex-row justify-between bg-gray-100 rounded-lg overflow-hidden relative'>
+        <div className='flex flex-row justify-between bg-gray-100 rounded-lg overflow-hidden relative hover:scale-[1.04] transition-all duration-150 transform-gpu'>
             <div className="flex flex-row items-center gap-4 p-2 overflow-hidden w-full">
-                {/* Check if image exists before accessing its properties */}
-                {song.image && song.image[2] && (
-                    <img src={song.image[2].url} className='w-16 h-16 bg-gray-400 rounded-lg' />
-                )}
-                <div className="flex-flex-col w-full">
-                    <p className='whitespace-nowrap font-bold' dangerouslySetInnerHTML={{ __html: song.name }} />
-                    {/* Safely access artist's name */}
-                    <p className='whitespace-nowrap text-sm' dangerouslySetInnerHTML={{ __html: song.artists.primary[0]?.name || 'Unknown Artist' }} />
-                    <p className='whitespace-nowrap px-2 text-white bg-sky-400 w-max rounded-full text-xs' dangerouslySetInnerHTML={{ __html: song.language }} />
-                </div>
+                <ul className="w-full flex flex-col">
+                    <li className="cursor-pointer bg-gray-200 p-2 rounded-lg h-max">
+                        <div className="flex flex-row gap-2 items-center">
+                            {song.image && song.image[2] && (
+                                <img src={song.image[2].url} className="rounded-lg h-12 w-12" />
+                            )}
+                            <div className="flex flex-col">
+                                <div className="flex flex-row gap-1 items-center">
+                                    {song.explicitContent ? <span className='text-xs bg-green-500 text-white h-4 w-4 rounded flex justify-center items-center'>E</span> : ""}
+                                    <p className="font-semibold text-base flex-1 overflow-hidden truncate max-w-40 sm:max-w-full " dangerouslySetInnerHTML={{ __html: song.name }} />
+                                </div>
+                                <p className="text-sm " dangerouslySetInnerHTML={{ __html: song.artists.primary[0].name }} />
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
             {/* <button className='w-[25%] bg-black' onClick={() => onDownload(song)}>Download</button> */}
 

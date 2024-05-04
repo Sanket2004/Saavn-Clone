@@ -10,7 +10,7 @@ function ErrorPage() {
             <h1 className="uppercase tracking-widest text-gray-500">404 | Not Found</h1>
             <button
                 onClick={() => navigate('/')}
-                className="mt-4 cursor-pointer w-full h-10 flex justify-center items-center inline-block rounded border border-sky-600 bg-sky-600 text-sm text-white hover:bg-transparent hover:text-sky-600 focus:outline-none focus:ring active:text-sky-500"
+                className="mt-4 cursor-pointer w-full h-10 flex justify-center items-center inline-block rounded border border-green-600 bg-green-600 text-sm text-white hover:bg-transparent hover:text-green-600 focus:outline-none focus:ring active:text-green-500"
             >
                 Back To Home Page
             </button>

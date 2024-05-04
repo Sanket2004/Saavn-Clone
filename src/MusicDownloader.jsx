@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import SongItem from './Components/SongItem';
 import SearchInput from './Components/SearchInput';
 import Pagination from './Components/Pagination';
 import Loader from './Components/Loader';
 import toast, { Toaster } from 'react-hot-toast';
+import { motion } from 'framer-motion';
+
 
 function MusicDownloader() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate hook
+  const location = useLocation(); // Initialize useLocation hook
+
+  const queryParams = new URLSearchParams(location.search);
+  const query = queryParams.get('query') || '';
+
+  const [searchQuery, setSearchQuery] = useState(query);
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -15,8 +23,18 @@ function MusicDownloader() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    handleSearch();
+    if (searchQuery.trim() !== '' && currentPage !== 0) {
+      handleSearch();
+    }
   }, [currentPage, searchQuery]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleSearch();
+    }, 500); // Adjust the delay time as needed (e.g., 500ms)
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   const handleSearch = async () => {
     try {
@@ -28,8 +46,11 @@ function MusicDownloader() {
       setSearchResults(jsonData.data.results);
       setTotalPages(jsonData.data.totalPages);
       setLoading(false);
+
+      // Programmatically change route after setting search results
+      navigate(`?query=${searchQuery}`);
     } catch (error) {
-      toast.error('Failed to fetch data !');
+      toast.error('Failed to fetch data!');
       console.error('Error fetching data:', error);
       setLoading(false);
     }
@@ -47,10 +68,10 @@ function MusicDownloader() {
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
-      toast.success(song.name+' is downloaded !');
+      toast.success(song.name + ' is downloaded!');
       setDownloading(false);
     } catch (error) {
-      toast.error('Failed to download !');
+      toast.error('Failed to download!');
       console.error('Error downloading:', error);
       setDownloading(false);
     }
@@ -71,19 +92,34 @@ function MusicDownloader() {
       <section>
         <div className="w-full mx-auto max-w-screen-xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 bg-white">
           <div className="w-full fixed top-0 left-1/2 tranform -translate-x-1/2 mx-auto max-w-screen-xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8 bg-white z-[999]">
+            {/* <div className="flex flex-row items-center gap-2 mb-2">
+            <i className="ri-music-2-line text-xl font-bold bg-green-400 w-8 h-8 flex items-center justify-center rounded text-white"></i>
+            </div> */}
             <SearchInput value={searchQuery} onChange={setSearchQuery} />
           </div>
           {loading && <Loader />}
-          <div className='flex flex-col gap-4 text-balck z-0 mt-24 mb-8'>
+          <div className='flex flex-col gap-4 text-balck z-0 mt-20 mb-8'>
             {downloading && <Loader />}
-            {searchResults.length > 0 && (
-              <p>Result for: {searchQuery}</p>
+            {searchQuery.trim() === '' ? (
+              <p>Please enter a search query</p>
+            ) : searchResults.length > 0 ? (
+              <>
+                <p>Result for: <span className='text-green-400 font-semibold'>{searchQuery}</span></p>
+                {searchResults.map((song) => (
+                  <Link key={song.id} to={`/song/${song.id}`}>
+                    <motion.div
+                      whileInView={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      transition={{ delay: 0, duration: 0.5 }}
+                    >
+                      <SongItem song={song} onDownload={handleDownload} />
+                    </motion.div>
+                  </Link>
+                ))}
+              </>
+            ) : (
+              <p>No songs found for "{searchQuery}"</p>
             )}
-            {searchResults.map((song) => (
-              <Link key={song.id} to={`/song/${song.id}`}>
-                <SongItem song={song} onDownload={handleDownload} />
-              </Link>
-            ))}
           </div>
           {searchResults.length > 0 && (
             <Pagination
@@ -94,6 +130,7 @@ function MusicDownloader() {
             />
           )}
         </div>
+
       </section>
     </>
   );

@@ -12,6 +12,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/song/:id" element={<MusicDetailSPage />} />
+        {/* Add a route for search query */}
+        <Route path="/song" element={<App />} /> 
         <Route path="*" element={<ErrorPage />} /> 
       </Routes>
     </Router>

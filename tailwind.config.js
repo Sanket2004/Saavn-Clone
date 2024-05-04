@@ -10,7 +10,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"DM Sans", sans-serif', ...defaultTheme.fontFamily.sans],
+        sans: [' "Be Vietnam Pro", sans-serif', ...defaultTheme.fontFamily.sans],
       },
     },
   },
